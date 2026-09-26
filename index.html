@@ -92,8 +92,6 @@
   .card.sel{background:var(--tile-sel);color:#fff}
   .card.sel .t small{color:#f3f2c7}
   .card.sel::after{content:"✓";position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:var(--olive);color:#fff;display:grid;place-items:center;font-weight:700}
-  .swatch{aspect-ratio:4/3;display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr 1fr}
-  .swatch span:first-child{grid-row:1/4}
   .card.noimg{display:flex;flex-direction:column}
   .card.noimg .q{aspect-ratio:4/3;display:grid;place-items:center;font-size:48px;font-weight:700;color:var(--olive);background:#f3f2c7}
 
@@ -223,7 +221,7 @@ fbq('track', 'PageView');
       <div class="cards">
         <button class="card" data-v="Матове"><img src="img/p-mat.jpg" alt="" loading="lazy"><div class="t">Матове<small>Класика, як пофарбована стеля</small></div></button>
         <button class="card" data-v="Сатинове"><img src="img/p-satin.jpg" alt="" loading="lazy"><div class="t">Сатинове<small>М'який блиск, відбиває світло</small></div></button>
-        <button class="card" data-v="Кольорове / чорне"><div class="swatch"><span style="background:#1b1c1f"></span><span style="background:#3d4a5c"></span><span style="background:#b9a58a"></span><span style="background:#6f7d5a"></span></div><div class="t">Кольорове / чорне<small>Для офісів і сміливих інтер'єрів</small></div></button>
+        <button class="card" data-v="Кольорове / з фотодруком"><img src="img/p-color.jpg" alt="" loading="lazy"><div class="t">Кольорове / з фотодруком<small>Будь-який колір або малюнок</small></div></button>
         <button class="card" data-v="Світлопрозоре"><img src="img/p-light.jpg" alt="" loading="lazy"><div class="t">Світлопрозоре<small>Світиться всією площею</small></div></button>
         <button class="card noimg" data-v="Ще не визначився"><div class="q">?</div><div class="t">Ще не визначився<small>Порадимо на замірі</small></div></button>
       </div>
