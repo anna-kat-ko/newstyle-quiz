@@ -56,7 +56,10 @@
   /* Головна */
   .logo{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-weight:700;font-size:14px;letter-spacing:.02em}
   .logo img{width:44px;height:44px;border-radius:8px;object-fit:cover}
-  .logo .tel{margin-left:auto;color:var(--ink);text-decoration:none;font-size:15px;white-space:nowrap}
+  .phones{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:-6px 0 16px;max-width:560px}
+  .phones a{text-align:center;background:var(--bubble);color:var(--ink);text-decoration:none;font-weight:500;font-size:15px;padding:9px 12px;border-radius:999px;white-space:nowrap}
+  .phones i{font-style:normal;margin-right:6px}
+  .phones a:hover{background:var(--tile-sel);color:#fff}
   .logo small{display:block;font-weight:400;color:var(--muted);letter-spacing:0}
   .hero{border-radius:var(--r);overflow:hidden;aspect-ratio:16/8;margin-bottom:20px;background:#ccc}
   .hero img{width:100%;height:100%;object-fit:cover}
@@ -89,6 +92,8 @@
   .card.sel{background:var(--tile-sel);color:#fff}
   .card.sel .t small{color:#f3f2c7}
   .card.sel::after{content:"✓";position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:var(--olive);color:#fff;display:grid;place-items:center;font-weight:700}
+  .swatch{aspect-ratio:4/3;display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr 1fr}
+  .swatch span:first-child{grid-row:1/4}
   .card.noimg{display:flex;flex-direction:column}
   .card.noimg .q{aspect-ratio:4/3;display:grid;place-items:center;font-size:48px;font-weight:700;color:var(--olive);background:#f3f2c7}
 
@@ -145,8 +150,11 @@
     h1{font-size:26px}
     h2{font-size:22px;margin-bottom:16px}
     .lead{font-size:15px}
-    .hero{aspect-ratio:16/10}
+    .hero{aspect-ratio:16/8;margin-bottom:16px}
     .start-btn{width:100%;min-width:0}
+    .phones{gap:6px}
+    .phones a{font-size:13px;padding:9px 4px}
+    .phones i{display:none}
     .list{max-width:none}
     .cards{grid-template-columns:1fr 1fr;gap:10px}
     .card .t{font-size:13px;padding:8px 10px 10px}
@@ -179,7 +187,12 @@ fbq('track', 'PageView');
 
     <!-- ============ ГОЛОВНА ============ -->
     <section class="screen active" data-step="0">
-      <div class="logo"><img src="img/logo.jpg" alt="New Style"><div>NEW STYLE<small>студія натяжних стель · Київ</small></div><a class="tel" href="tel:+380663359300">066 335 93 00</a></div>
+      <div class="logo"><img src="img/logo.jpg" alt="New Style"><div>NEW STYLE<small>студія натяжних стель · Київ</small></div></div>
+      <div class="phones">
+        <a href="tel:+380663359300"><i>📲</i>066 335 93 00</a>
+        <a href="tel:+380931155196"><i>📲</i>093 115 51 96</a>
+        <a href="tel:+380963386627"><i>📲</i>096 338 66 27</a>
+      </div>
       <div class="hero"><img src="img/hero.jpg" alt="Натяжна стеля з трековим світлом у вітальні"></div>
       <h1>Розрахуйте вартість натяжної стелі за 1 хвилину</h1>
       <p class="lead">Дайте відповідь на 3 питання — технолог порахує ціну з урахуванням вашого освітлення.</p>
@@ -210,7 +223,7 @@ fbq('track', 'PageView');
       <div class="cards">
         <button class="card" data-v="Матове"><img src="img/p-mat.jpg" alt="" loading="lazy"><div class="t">Матове<small>Класика, як пофарбована стеля</small></div></button>
         <button class="card" data-v="Сатинове"><img src="img/p-satin.jpg" alt="" loading="lazy"><div class="t">Сатинове<small>М'який блиск, відбиває світло</small></div></button>
-        <button class="card" data-v="Кольорове / чорне"><img src="img/p-black.jpg" alt="" loading="lazy"><div class="t">Кольорове / чорне<small>Для офісів і сміливих інтер'єрів</small></div></button>
+        <button class="card" data-v="Кольорове / чорне"><div class="swatch"><span style="background:#1b1c1f"></span><span style="background:#3d4a5c"></span><span style="background:#b9a58a"></span><span style="background:#6f7d5a"></span></div><div class="t">Кольорове / чорне<small>Для офісів і сміливих інтер'єрів</small></div></button>
         <button class="card" data-v="Світлопрозоре"><img src="img/p-light.jpg" alt="" loading="lazy"><div class="t">Світлопрозоре<small>Світиться всією площею</small></div></button>
         <button class="card noimg" data-v="Ще не визначився"><div class="q">?</div><div class="t">Ще не визначився<small>Порадимо на замірі</small></div></button>
       </div>
