@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>New Style — розрахунок натяжної стелі</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* Кольори та шрифти зняті зі скринів референсу */
+  :root{
+    --bg:#ededb4;          /* основний фон */
+    --side:#f3f2c7;        /* фон правої колонки */
+    --tile:#e4e39a;        /* варіант відповіді */
+    --tile-sel:#adab52;    /* обраний варіант */
+    --bubble:#dada6f;      /* плашка-репліка представника */
+    --olive:#858529;       /* кнопки */
+    --olive-dark:#6d6d1f;
+    --ink:#1d1d1b; --muted:#5d5c45; --line:#b9b77a;
+    --track:#2e3440;       /* шкала прогресу */
+    --mono:#15171a; --mono-red:#fb5255;
+    --r:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg)}
+  body{font-family:Roboto,Arial,sans-serif;color:var(--ink);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  button{font:inherit;color:inherit}
+
+  .app{max-width:1180px;margin:0 auto;min-height:100dvh;display:grid;grid-template-columns:1fr 300px}
+  .main{display:flex;flex-direction:column;min-width:0;padding:28px 32px 0}
+  .side{background:var(--side);padding:24px 20px;display:flex;flex-direction:column;gap:14px}
+
+  /* ---------- Представник ---------- */
+  .rep{display:flex;gap:12px;align-items:center}
+  .ava{position:relative;flex:none;width:56px;height:56px;border-radius:50%;background:#c9c77a url('img/rep.jpg') center/cover;display:grid;place-items:center;font-weight:700;font-size:22px;color:#fff}
+  .ava::after{content:"";position:absolute;right:1px;bottom:1px;width:12px;height:12px;border-radius:50%;background:#5ac24f;border:2px solid var(--side)}
+  .rep b{display:block;font-size:15px;font-weight:500}
+  .rep small{font-size:12px;color:var(--muted)}
+  .bubble{background:var(--bubble);border-radius:0 var(--r) var(--r) var(--r);padding:10px 12px;font-size:13px;line-height:1.35;transition:opacity .25s}
+
+  .bonus-h{font-size:15px;font-weight:500;margin-top:auto}
+  .bonus{position:relative;border-radius:8px;overflow:hidden;height:64px;display:flex;align-items:center;justify-content:flex-end;padding:0 14px;color:#fff;font-weight:700;font-size:13px;text-align:right;text-shadow:0 1px 3px rgba(0,0,0,.5);background-size:cover;background-position:center}
+  .bonus::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0) 20%,rgba(0,0,0,.55))}
+  .bonus span{position:relative}
+  .bonus i{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.85);display:grid;place-items:center;font-style:normal;font-size:10px}
+  .bonus.open i{background:#5ac24f;color:#fff}
+
+  /* ---------- Екрани ---------- */
+  .screen{display:none;flex-direction:column;flex:1;animation:in .3s ease}
+  .screen.active{display:flex}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h1{font-size:34px;line-height:1.15;font-weight:700;margin-bottom:12px}
+  h2{font-size:28px;line-height:1.2;font-weight:700;margin-bottom:22px}
+
+  /* Головна */
+  .logo{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-weight:700;font-size:14px;letter-spacing:.02em}
+  .logo img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+  .logo small{display:block;font-weight:400;color:var(--muted);letter-spacing:0}
+  .hero{border-radius:var(--r);overflow:hidden;aspect-ratio:16/8;margin-bottom:20px;background:#ccc}
+  .hero img{width:100%;height:100%;object-fit:cover}
+  .lead{font-size:17px;color:var(--muted);margin-bottom:18px;max-width:560px}
+  .mono{display:flex;gap:14px;align-items:center;background:var(--mono);color:#fff;border-radius:var(--r);padding:14px 16px;margin-bottom:20px;max-width:560px}
+  .mono-b{flex:none;width:50px;height:50px;border-radius:12px;background:#fff;color:var(--mono);display:grid;place-items:center;text-align:center;font-size:10px;font-weight:700;line-height:1.05}
+  .mono-b b{display:block;font-size:20px;color:var(--mono-red)}
+  .mono h3{font-size:16px;font-weight:700;margin-bottom:2px}
+  .mono p{font-size:13px;color:#b9bcc2}
+  .mono p strong{color:#fff}
+  .start-btn{align-self:flex-start;min-width:280px}
+
+  /* Варіанти: список (площа) */
+  .list{display:flex;flex-direction:column;gap:10px;max-width:380px}
+  .row{display:flex;align-items:center;gap:14px;background:var(--tile);border:1px solid var(--line);border-radius:6px;padding:12px 14px;cursor:pointer;text-align:left;transition:background .15s}
+  .row::before{content:"";flex:none;width:14px;height:14px;border-radius:50%;background:var(--track);box-shadow:0 0 0 3px var(--tile)}
+  .row:hover{background:#dcdb8a}
+  .row.sel{background:var(--tile-sel);color:#fff}
+  .row.sel::before{background:#fff;box-shadow:0 0 0 3px var(--tile-sel),0 0 0 5px #fff}
+  .row input{flex:1;border:0;background:transparent;font:inherit;outline:none;color:inherit}
+  .row input::placeholder{color:var(--muted)}
+
+  /* Варіанти: картки з фото */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--tile);border:1px solid var(--line);border-radius:6px;overflow:hidden;cursor:pointer;text-align:left;padding:0;transition:background .15s,transform .15s;position:relative}
+  .card:hover{transform:translateY(-2px)}
+  .card img{width:100%;aspect-ratio:4/3;object-fit:cover}
+  .card .t{padding:10px 12px 12px;font-size:14px;min-height:52px}
+  .card .t small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .card.sel{background:var(--tile-sel);color:#fff}
+  .card.sel .t small{color:#f3f2c7}
+  .card.sel::after{content:"✓";position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:var(--olive);color:#fff;display:grid;place-items:center;font-weight:700}
+  .card.noimg{display:flex;flex-direction:column}
+  .card.noimg .q{aspect-ratio:4/3;display:grid;place-items:center;font-size:48px;font-weight:700;color:var(--olive);background:#f3f2c7}
+
+  /* Низ: прогрес + навігація */
+  .foot{position:sticky;bottom:0;background:var(--bg);display:flex;align-items:center;gap:16px;padding:16px 0 20px;margin-top:24px;border-top:1px solid var(--line)}
+  .prog{flex:1;max-width:280px}
+  .prog small{display:block;font-size:12px;margin-bottom:6px}
+  .prog .bar{height:5px;background:var(--track);border-radius:3px;overflow:hidden}
+  .prog .bar i{display:block;height:100%;background:var(--olive);transition:width .35s}
+  .foot[hidden]{display:none}
+  .foot .sp{flex:1}
+  .back{width:40px;height:40px;border-radius:50%;border:1px solid var(--ink);background:transparent;cursor:pointer;font-size:16px}
+  .back:disabled{opacity:.3}
+  .btn{border:0;border-radius:999px;background:var(--olive);color:#fff;font-weight:500;font-size:15px;padding:12px 26px;cursor:pointer;transition:background .15s,opacity .15s}
+  .btn:hover{background:var(--olive-dark)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn.big{padding:16px 28px;font-size:16px;text-transform:uppercase;letter-spacing:.03em;width:100%}
+
+  /* Контакти */
+  .contact{max-width:520px;margin:0 auto;width:100%;text-align:center}
+  .contact h2{margin-bottom:10px}
+  .contact .sub{font-size:17px;margin-bottom:16px}
+  .msgr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+  .msgr button{background:var(--bubble);border:0;border-radius:4px;padding:16px 6px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px}
+  .msgr button.sel{background:var(--tile-sel);color:#fff}
+  .msgr svg{width:30px;height:30px}
+  .field{text-align:left;margin-bottom:12px}
+  .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+  .inp{display:flex;align-items:center;background:#e4e39a;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .inp span{padding:0 12px;font-size:14px;white-space:nowrap;border-right:1px solid var(--line);align-self:stretch;display:flex;align-items:center}
+  .inp input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:16px;padding:13px 12px;outline:none}
+  .agree{display:flex;gap:8px;justify-content:center;align-items:center;font-size:12px;color:var(--muted);margin-top:10px}
+  .agree input{accent-color:var(--olive)}
+  .mono.small{margin:0 auto 18px;text-align:left;padding:10px 12px}
+  .mono.small .mono-b{width:40px;height:40px;border-radius:9px}
+  .mono.small .mono-b{font-size:8px}
+  .mono.small .mono-b b{font-size:16px}
+  .mono.small h3{font-size:14px}
+
+  .done{align-items:center;justify-content:center;text-align:center}
+  .done .ok{width:72px;height:72px;border-radius:50%;background:var(--olive);color:#fff;display:grid;place-items:center;font-size:34px;margin-bottom:16px}
+  .done p{max-width:420px;color:var(--muted);margin-bottom:20px}
+
+  /* ---------- Мобільна версія ---------- */
+  @media (max-width:860px){
+    .app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+    .side{order:-1;padding:12px 16px;gap:8px;flex-direction:row;flex-wrap:wrap;align-items:flex-start;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .rep{flex:none}
+    .rep > div:last-child{display:none}
+    .ava{width:44px;height:44px;font-size:18px}
+    .bubble{flex:1;min-width:0;font-size:12.5px;padding:8px 10px}
+    .bonus-h,.bonus{display:none}
+    .main{padding:18px 16px 0}
+    h1{font-size:26px}
+    h2{font-size:22px;margin-bottom:16px}
+    .lead{font-size:15px}
+    .hero{aspect-ratio:16/10}
+    .start-btn{width:100%;min-width:0}
+    .list{max-width:none}
+    .cards{grid-template-columns:1fr 1fr;gap:10px}
+    .card .t{font-size:13px;padding:8px 10px 10px}
+    .foot{padding:12px 0 calc(12px + env(safe-area-inset-bottom));margin-top:18px}
+    .prog{max-width:none}
+    .bonus-strip{display:flex}
+  }
+  .bonus-strip{display:none;gap:8px;margin:14px 0 4px;flex-wrap:wrap}
+  .bonus-strip span{background:var(--bubble);border-radius:999px;padding:6px 10px;font-size:12px}
+</style>
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1430213607595002');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1430213607595002&ev=PageView&noscript=1"/></noscript>
+<!-- End Facebook Pixel Code -->
+</head>
+<body>
+<div class="app">
+  <main class="main">
+
+    <!-- ============ ГОЛОВНА ============ -->
+    <section class="screen active" data-step="0">
+      <div class="logo"><img src="img/logo.jpg" alt="New Style"><div>NEW STYLE<small>студія натяжних стель · Київ</small></div></div>
+      <div class="hero"><img src="img/hero.jpg" alt="Натяжна стеля з трековим світлом у вітальні"></div>
+      <h1>Розрахуйте вартість натяжної стелі за 1 хвилину</h1>
+      <p class="lead">Дайте відповідь на 3 питання — технолог порахує ціну з урахуванням вашого освітлення.</p>
+      <div class="mono">
+        <div class="mono-b"><span><b>0%</b>переплат</span></div>
+        <div><h3>Оплата частинами від monobank</h3><p>Стеля зараз — платите поступово, <strong>до 10 платежів без переплат</strong></p></div>
+      </div>
+      <button class="btn big start-btn" data-next>Розрахувати вартість →</button>
+      <div class="bonus-strip"><span>🎁 10% знижки при замовленні</span><span>📏 Безкоштовний виїзд замірника</span></div>
+    </section>
+
+    <!-- ============ 1. ПЛОЩА ============ -->
+    <section class="screen" data-step="1" data-key="area">
+      <h2>Яку площу плануєте?</h2>
+      <div class="list">
+        <button class="row" data-v="10–20 м²">10–20 м²</button>
+        <button class="row" data-v="20–30 м²">20–30 м²</button>
+        <button class="row" data-v="30–40 м²">30–40 м²</button>
+        <button class="row" data-v="40–60 м²">40–60 м²</button>
+        <button class="row" data-v="Більше 60 м²">Більше 60 м²</button>
+        <label class="row" data-other><input type="text" inputmode="decimal" placeholder="Інше…"></label>
+      </div>
+    </section>
+
+    <!-- ============ 2. ТИП ПОЛОТНА ============ -->
+    <section class="screen" data-step="2" data-key="canvas">
+      <h2>Який тип полотна?</h2>
+      <div class="cards">
+        <button class="card" data-v="Матове"><img src="img/p-mat.jpg" alt="" loading="lazy"><div class="t">Матове<small>Класика, як пофарбована стеля</small></div></button>
+        <button class="card" data-v="Сатинове"><img src="img/p-satin.jpg" alt="" loading="lazy"><div class="t">Сатинове<small>М'який блиск, відбиває світло</small></div></button>
+        <button class="card" data-v="Кольорове / чорне"><img src="img/p-black.jpg" alt="" loading="lazy"><div class="t">Кольорове / чорне<small>Для офісів і сміливих інтер'єрів</small></div></button>
+        <button class="card" data-v="Світлопрозоре"><img src="img/p-light.jpg" alt="" loading="lazy"><div class="t">Світлопрозоре<small>Світиться всією площею</small></div></button>
+        <button class="card noimg" data-v="Ще не визначився"><div class="q">?</div><div class="t">Ще не визначився<small>Порадимо на замірі</small></div></button>
+      </div>
+    </section>
+
+    <!-- ============ 3. ОСВІТЛЕННЯ ============ -->
+    <section class="screen" data-step="3" data-key="light">
+      <h2>Який тип освітлення плануєте?</h2>
+      <div class="cards">
+        <button class="card" data-v="Точкові світильники / люстра"><img src="img/l-spots.jpg" alt="" loading="lazy"><div class="t">Точкові світильники чи люстра</div></button>
+        <button class="card" data-v="Світлові лінії"><img src="img/l-lines.jpg" alt="" loading="lazy"><div class="t">Світлові лінії</div></button>
+        <button class="card" data-v="Трекова система"><img src="img/l-track.jpg" alt="" loading="lazy"><div class="t">Трекова система</div></button>
+        <button class="card" data-v="Контурна / ширяюча підсвітка"><img src="img/l-contour.jpg" alt="" loading="lazy"><div class="t">Контурна підсвітка</div></button>
+        <button class="card" data-v="Комбіноване"><img src="img/l-combo.jpg" alt="" loading="lazy"><div class="t">Комбіноване</div></button>
+        <button class="card noimg" data-v="Ще не знаю"><div class="q">?</div><div class="t">Ще не знаю</div></button>
+      </div>
+    </section>
+
+    <!-- ============ 4. КОНТАКТИ ============ -->
+    <section class="screen" data-step="4">
+      <form class="contact" id="form" novalidate>
+        <h2>Наш технолог вже приступає до розрахунку</h2>
+        <p class="sub">Куди прислати результати?</p>
+        <div class="msgr" id="msgr">
+          <button type="button" data-v="WhatsApp"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#25d366"/><path fill="#fff" d="M16 7a9 9 0 0 0-7.7 13.6L7 25l4.5-1.2A9 9 0 1 0 16 7zm5.2 12.6c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>WhatsApp</button>
+          <button type="button" data-v="Telegram" class="sel"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#29a9eb"/><path fill="#fff" d="M7.2 15.6l15.4-5.9c.7-.3 1.3.2 1.1 1.2l-2.6 12.4c-.2.9-.7 1.1-1.5.7l-4-3-1.9 1.9c-.2.2-.4.4-.8.4l.3-4.1 7.4-6.7c.3-.3-.1-.4-.5-.2l-9.2 5.8-3.9-1.2c-.9-.3-.9-.9.2-1.3z"/></svg>Telegram</button>
+          <button type="button" data-v="Viber"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#7360f2"/><path fill="#fff" d="M21.8 18.7c-.5-.4-1-.7-1.5-1-.9-.6-1.4-.1-1.8.4-.3.4-.8.4-1.3.2-1.7-.8-2.9-2-3.7-3.7-.3-.7-.1-1.2.5-1.6.3-.2.7-.5.7-1 0-.6-1.5-2.7-2.1-2.9-.2-.1-.5-.1-.7 0-1.4.5-2 1.6-1.4 2.9 1.6 3.8 4.3 6.4 8.1 8 .2.1.5.1.7.2 1 0 2.1-.9 2.4-1.8.3-.9-.4-1.3-.9-1.7zM16.6 8.6c2.9.4 4.8 2.4 5.1 5.3 0 .3-.1.6.3.6.4 0 .3-.3.3-.6 0-3-2.7-5.9-5.9-6-.2 0-.6-.1-.6.3 0 .3.4.3.8.4zm3.8 5.2c.4 0 .3-.4.3-.6-.1-2-1.8-3.9-3.9-4-.3 0-.6-.1-.6.3 0 .3.3.3.5.4 1.5.3 2.4 1.2 3 2.8 0 .2 0 .4.1.6.1.3.3.5.6.5z"/></svg>Viber</button>
+        </div>
+        <div class="field"><label for="name">Як до вас звертатись?</label><div class="inp"><span>👤</span><input id="name" autocomplete="given-name" placeholder="Ваше ім'я"></div></div>
+        <div class="field"><label for="tel">Телефон</label><div class="inp"><span>🇺🇦 +380</span><input id="tel" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567"></div></div>
+        <div class="field" id="tgField"><label for="tg">Або логін Telegram</label><div class="inp"><span>@</span><input id="tg" autocomplete="off" placeholder="username"></div></div>
+        <div class="mono small">
+          <div class="mono-b"><span><b>0%</b>переплат</span></div>
+          <div><h3>Можна частинами від monobank</h3><p>Розрахуємо щомісячний платіж</p></div>
+        </div>
+        <button class="btn big" type="submit" id="submit" disabled>Отримати розрахунок</button>
+        <label class="agree"><input type="checkbox" id="agree" checked> Погоджуюсь з політикою конфіденційності</label>
+      </form>
+    </section>
+
+    <!-- ============ ДЯКУЄМО ============ -->
+    <section class="screen done" data-step="5">
+      <div class="ok">✓</div>
+      <h2>Дякуємо! Заявку прийнято</h2>
+      <p>Технолог надішле розрахунок і варіанти оплати частинами протягом 15 хвилин у робочий час. Ваші бонуси — 10% знижки та безкоштовний замір — закріплені.</p>
+      <a class="btn" href="tel:+380000000000" style="text-decoration:none">Зателефонувати зараз</a>
+    </section>
+
+    <!-- Прогрес і навігація (крок 1–3) -->
+    <div class="foot" id="foot" hidden>
+      <div class="prog"><small>Готово: <b id="pct">0</b>%</small><div class="bar"><i id="bar" style="width:0"></i></div></div>
+      <span class="sp"></span>
+      <button class="back" id="back" aria-label="Назад">←</button>
+      <button class="btn" id="next" disabled>Далі →</button>
+    </div>
+  </main>
+
+  <!-- ============ ПРАВА КОЛОНКА ============ -->
+  <aside class="side">
+    <div class="rep"><div class="ava">Є</div><div><b>Євген</b><small>представник</small></div></div>
+    <div class="bubble" id="bubble">Вітаю! Розрахую вартість стелі для вашої квартири.</div>
+    <div class="bonus-h">Бонуси після проходження тесту</div>
+    <div class="bonus" style="background-image:url(img/l-lines.jpg)"><i>🔒</i><span>10% знижки<br>при замовленні</span></div>
+    <div class="bonus" style="background-image:url(img/p-mat.jpg)"><i>🔒</i><span>Безкоштовний виїзд<br>замірника</span></div>
+  </aside>
+</div>
+
+<script>
+// ▼ Функція Vercel, що пересилає заявку в Telegram через @NewStyleKyiv_bot (api/lead.js)
+const LEAD_ENDPOINT = '/api/lead';
+
+// Безпечний виклик пікселя (не ламає квіз, якщо fbq заблокований)
+const track = (...a) => { try { window.fbq && fbq(...a); } catch (e) {} };
+
+// Репліки представника на кожному кроці
+const BUBBLES = [
+  'Вітаю! Розрахую вартість стелі для вашої квартири.',
+  'Власне виробництво стель та надійний партнер.',
+  'Підкажу, яке полотно краще для кухні, спальні чи ванної.',
+  'Комплексне надання послуг: зробимо все під ключ і беремо на себе проблеми, що виникають під час ремонту.',
+  'Залишилось останнє — куди надіслати розрахунок?',
+  'Дякую! Вже рахую 🙌'
+];
+const PCT = [0, 0, 33, 67, 100, 100];
+
+const screens = [...document.querySelectorAll('.screen')];
+const foot = document.getElementById('foot'), nextBtn = document.getElementById('next'), backBtn = document.getElementById('back');
+const answers = { area:'', canvas:'', light:'', messenger:'Telegram' };
+let step = 0;
+
+function go(n){
+  step = Math.max(0, Math.min(n, screens.length - 1));
+  screens.forEach((s, i) => s.classList.toggle('active', i === step));
+  foot.hidden = !(step >= 1 && step <= 3);
+  document.getElementById('pct').textContent = PCT[step];
+  document.getElementById('bar').style.width = PCT[step] + '%';
+  const key = screens[step].dataset.key;
+  nextBtn.disabled = key ? !answers[key] : false;
+  const b = document.getElementById('bubble');
+  b.style.opacity = 0; setTimeout(() => { b.textContent = BUBBLES[step]; b.style.opacity = 1; }, 150);
+  if (step === 5) document.querySelectorAll('.bonus').forEach(el => { el.classList.add('open'); el.querySelector('i').textContent = '✓'; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelector('[data-next]').onclick = () => { track('trackCustom', 'QuizStart'); go(1); };
+nextBtn.onclick = () => go(step + 1);
+backBtn.onclick = () => go(step - 1);
+
+// Вибір варіанту: підсвітити, зберегти, автоматично далі
+document.addEventListener('click', e => {
+  const opt = e.target.closest('.row:not([data-other]), .card');
+  if (!opt) return;
+  const sec = opt.closest('.screen');
+  sec.querySelectorAll('.row, .card').forEach(o => o.classList.toggle('sel', o === opt));
+  answers[sec.dataset.key] = opt.dataset.v;
+  nextBtn.disabled = false;
+  setTimeout(() => go(step + 1), 300);
+});
+
+// «Інше» для площі
+const other = document.querySelector('[data-other]');
+other.querySelector('input').addEventListener('input', e => {
+  const v = e.target.value.trim();
+  other.parentNode.querySelectorAll('.row').forEach(o => o.classList.toggle('sel', o === other && !!v));
+  answers.area = v ? v + ' м²' : '';
+  nextBtn.disabled = !v;
+});
+
+// Месенджер
+document.getElementById('msgr').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  b.parentNode.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b));
+  answers.messenger = b.dataset.v;
+  document.getElementById('tgField').hidden = b.dataset.v !== 'Telegram';
+});
+
+// Форма
+const nameEl = document.getElementById('name'), telEl = document.getElementById('tel'), tgEl = document.getElementById('tg'),
+      agreeEl = document.getElementById('agree'), submitEl = document.getElementById('submit');
+const valid = () => nameEl.value.trim() && (telEl.value.replace(/\D/g, '').length >= 9 || tgEl.value.trim().length >= 3) && agreeEl.checked;
+[nameEl, telEl, tgEl, agreeEl].forEach(el => el.addEventListener('input', () => submitEl.disabled = !valid()));
+
+document.getElementById('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!valid()) return;
+  const digits = telEl.value.replace(/\D/g, '').replace(/^380|^0/, '');
+  const lead = { ...answers, name: nameEl.value.trim(), phone: digits ? '+380' + digits : '', telegram: tgEl.value.trim().replace(/^@/, ''),
+    page: location.href, utm: Object.fromEntries(new URLSearchParams(location.search)), ts: new Date().toISOString() };
+  submitEl.disabled = true; submitEl.textContent = 'Надсилаємо…';
+  try {
+    if (LEAD_ENDPOINT) {
+      const r = await fetch(LEAD_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) });
+      if (!r.ok) throw new Error('lead ' + r.status);
+    }
+    else console.log('LEAD', lead);
+  } catch (err) { console.error(err); }
+  track('track', 'Lead', { content_name: 'Квіз натяжні стелі', area: lead.area, canvas: lead.canvas, light: lead.light });
+  go(5);
+});
+</script>
+</body>
+</html>
