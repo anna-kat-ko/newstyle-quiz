@@ -56,6 +56,7 @@
   /* Головна */
   .logo{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-weight:700;font-size:14px;letter-spacing:.02em}
   .logo img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+  .logo .tel{margin-left:auto;color:var(--ink);text-decoration:none;font-size:15px;white-space:nowrap}
   .logo small{display:block;font-weight:400;color:var(--muted);letter-spacing:0}
   .hero{border-radius:var(--r);overflow:hidden;aspect-ratio:16/8;margin-bottom:20px;background:#ccc}
   .hero img{width:100%;height:100%;object-fit:cover}
@@ -178,13 +179,13 @@ fbq('track', 'PageView');
 
     <!-- ============ ГОЛОВНА ============ -->
     <section class="screen active" data-step="0">
-      <div class="logo"><img src="img/logo.jpg" alt="New Style"><div>NEW STYLE<small>студія натяжних стель · Київ</small></div></div>
+      <div class="logo"><img src="img/logo.jpg" alt="New Style"><div>NEW STYLE<small>студія натяжних стель · Київ</small></div><a class="tel" href="tel:+380663359300">066 335 93 00</a></div>
       <div class="hero"><img src="img/hero.jpg" alt="Натяжна стеля з трековим світлом у вітальні"></div>
       <h1>Розрахуйте вартість натяжної стелі за 1 хвилину</h1>
       <p class="lead">Дайте відповідь на 3 питання — технолог порахує ціну з урахуванням вашого освітлення.</p>
       <div class="mono">
-        <div class="mono-b"><span><b>0%</b>переплат</span></div>
-        <div><h3>Оплата частинами від monobank</h3><p>Стеля зараз — платите поступово, <strong>до 10 платежів без переплат</strong></p></div>
+        <div class="mono-b"><span><b>6</b>платежів</span></div>
+        <div><h3>Оплата частинами від monobank</h3><p>Стеля зараз — платите поступово, <strong>6 платежів без переплат</strong></p></div>
       </div>
       <button class="btn big start-btn" data-next>Розрахувати вартість →</button>
       <div class="bonus-strip"><span>🎁 10% знижки при замовленні</span><span>📏 Безкоштовний виїзд замірника</span></div>
@@ -242,7 +243,7 @@ fbq('track', 'PageView');
         <div class="field"><label for="tel">Телефон</label><div class="inp"><span>🇺🇦 +380</span><input id="tel" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567"></div></div>
         <div class="field" id="tgField"><label for="tg">Або логін Telegram</label><div class="inp"><span>@</span><input id="tg" autocomplete="off" placeholder="username"></div></div>
         <div class="mono small">
-          <div class="mono-b"><span><b>0%</b>переплат</span></div>
+          <div class="mono-b"><span><b>6</b>платежів</span></div>
           <div><h3>Можна частинами від monobank</h3><p>Розрахуємо щомісячний платіж</p></div>
         </div>
         <button class="btn big" type="submit" id="submit" disabled>Отримати розрахунок</button>
@@ -255,7 +256,7 @@ fbq('track', 'PageView');
       <div class="ok">✓</div>
       <h2>Дякуємо! Заявку прийнято</h2>
       <p>Технолог надішле розрахунок і варіанти оплати частинами протягом 15 хвилин у робочий час. Ваші бонуси — 10% знижки та безкоштовний замір — закріплені.</p>
-      <a class="btn" href="tel:+380000000000" style="text-decoration:none">Зателефонувати зараз</a>
+      <a class="btn" href="tel:+380663359300" style="text-decoration:none">Зателефонувати зараз</a>
     </section>
 
     <!-- Прогрес і навігація (крок 1–3) -->
