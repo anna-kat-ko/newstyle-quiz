@@ -10,8 +10,8 @@
 <meta property="og:title" content="Шукаємо монтажника натяжних стель з досвідом">
 <meta property="og:description" content="Постійні об'єкти в Києві, від $2000/міс. Анкета — 1 хвилина.">
 <meta property="og:image" content="img/poster.jpg">
-<link rel="preload" as="image" href="frames/frame_0001.webp" media="(min-width: 861px)">
-<link rel="preload" as="image" href="frames-mobile/frame_0001.webp" media="(max-width: 860px)">
+<link rel="preload" as="image" href="frames-v2/frame_0001.webp" media="(min-width: 861px)">
+<link rel="preload" as="image" href="frames-m-v2/frame_0001.webp" media="(max-width: 860px)">
 <link rel="icon" type="image/svg+xml" href="img/logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,7 +203,7 @@ footer a{color:#ddd}
 @media(max-width:640px){.gallery{grid-template-columns:1fr 1fr;gap:10px}.gallery figcaption{font-size:11.5px;padding:5px 8px;left:8px;bottom:8px}}
 /* ===== STOP-SCROLL HERO ===== */
 #tkProgress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--y);z-index:60}
-#track{position:relative;height:720vh;background:var(--ink)}
+#track{position:relative;height:620vh;background:var(--ink)}
 #stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--ink);color:#fff}
 #bg{position:absolute;inset:-60px;width:calc(100% + 120px);height:calc(100% + 120px);filter:blur(40px) brightness(.4) saturate(1.2)}
 #stage::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,#0b0b0bee 0%,#0b0b0bb3 45%,#0b0b0b40 75%,#0b0b0b20 100%)}
@@ -238,7 +238,7 @@ footer a{color:#ddd}
 @keyframes tkbob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 .tk-cue.hide{opacity:0}
 @media(max-width:860px){
-  #track{height:560vh}
+  #track{height:500vh}
   #bg{display:none}
   #stage::before{display:none}
   .tk-top .tag{display:none}
@@ -285,8 +285,8 @@ footer a{color:#ddd}
     </div>
     <div class="tk-shade"></div>
 
-    <!-- Межі глав узяті з реального ролика: 0–3.5 с гармата, 3.7–7 с натяжка, 7.3–14 с заправка країв, 14.7–29 с готова стеля з тіньовим профілем -->
-    <div class="tk-ch first" data-start="0" data-end="0.105">
+    <!-- Межі глав з реального ролика (21.9 с після прискорення хвоста): 0–3.5 с гармата, 3.7–7 с натяжка, 7.3–14.6 с заправка країв, 14.7–21.9 с готова стеля з тіньовим профілем -->
+    <div class="tk-ch first" data-start="0" data-end="0.14">
       <span class="tk-eyebrow">Вакансія · Київ</span>
       <h1>Шукаємо монтажника натяжних стель <em>з досвідом</em></h1>
       <p>Об'єкти є щодня — потрібні руки. Від тебе тільки якісний монтаж, решту беремо на себе.</p>
@@ -300,25 +300,25 @@ footer a{color:#ddd}
       </button>
     </div>
 
-    <div class="tk-ch" data-start="0.13" data-end="0.235">
+    <div class="tk-ch" data-start="0.17" data-end="0.31">
       <span class="tk-eyebrow">01 · Потік об'єктів</span>
       <h2>Заявка вранці — монтаж завтра</h2>
       <p>Продаж, замір і матеріали — на нас. Ти приїжджаєш на готовий об'єкт і ставиш стелю.</p>
     </div>
 
-    <div class="tk-ch" data-start="0.26" data-end="0.47">
+    <div class="tk-ch" data-start="0.345" data-end="0.63">
       <span class="tk-eyebrow">02 · Якість</span>
       <h2>Чисті кути, акуратні примикання</h2>
       <p>Плівка на стінах, скотч, жодної плями на шпалерах. Клієнти обирають нас саме за це — і ми шукаємо людей, які працюють так само.</p>
     </div>
 
-    <div class="tk-ch" data-start="0.51" data-end="0.8">
+    <div class="tk-ch" data-start="0.675" data-end="0.865">
       <span class="tk-eyebrow">03 · Ріст</span>
       <h2>Тіньовий профіль, треки, світлові лінії</h2>
       <p>Складні системи, які якісно ставлять одиниці. Покажемо на наших об'єктах — ростеш у кваліфікації і в чеку.</p>
     </div>
 
-    <div class="tk-ch" data-start="0.84" data-end="1.01">
+    <div class="tk-ch" data-start="0.895" data-end="1.01">
       <span class="tk-eyebrow">Твій хід</span>
       <h2>Ставиш <em>так само</em>? Приходь у команду</h2>
       <p>Анкета на 1 хвилину. Якщо досвід підходить — зателефонуємо протягом дня.</p>
@@ -698,8 +698,8 @@ addEventListener('scroll', () => sticky.classList.toggle('show', document.getEle
   'use strict';
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var isMobile = matchMedia('(max-width: 860px)').matches;
-  var DIR = isMobile ? 'frames-mobile' : 'frames';
-  var TOTAL = isMobile ? 204 : 291;
+  var DIR = isMobile ? 'frames-m-v2' : 'frames-v2';
+  var TOTAL = isMobile ? 131 : 175;
 
   var canvas = document.getElementById('seq'), bg = document.getElementById('bg');
   var track = document.getElementById('track'), prog = document.getElementById('tkProgress'), cue = document.getElementById('tkCue');
@@ -763,11 +763,18 @@ addEventListener('scroll', () => sticky.classList.toggle('show', document.getEle
       if (frames[i]) return res();
       var img = new Image();
       img.decoding = 'async';
-      img.onload = img.onerror = function () { frames[i] = img; if (i === current || drawn !== current) drawn = -1; res(); };
+      var done = function () { frames[i] = img; if (!drawnImg) draw(); else if (drawn !== current) drawn = -1; };
+      img.onload = function () {
+        res(); // мережа вільна для наступного кадру, декодування йде паралельно
+        // decode() знімає ривок при першому показі кадру; тайм-аут — бо у фоновій вкладці він може не завершитись
+        Promise.race([img.decode ? img.decode() : null, new Promise(function (r) { setTimeout(r, 300); })]).then(done, done);
+      };
+      img.onerror = function () { res(); };
       img.src = DIR + '/frame_' + String(i + 1).padStart(4, '0') + '.webp';
     });
   }
   var order = [], seen = {};
+  for (var h = 0; h < Math.min(14, TOTAL); h++) { seen[h] = 1; order.push(h); }
   [16, 8, 4, 2, 1].forEach(function (step) {
     for (var i = 0; i < TOTAL; i += step) if (!seen[i]) { seen[i] = 1; order.push(i); }
   });
@@ -781,7 +788,7 @@ addEventListener('scroll', () => sticky.classList.toggle('show', document.getEle
   onScroll();
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', resize);
-  load(0).then(function () { resize(); tick(); pool(6); });
+  load(0).then(function () { setTimeout(resize, 0); tick(); pool(6); });
 })();
 </script>
 </body>
