@@ -195,6 +195,12 @@ footer a{color:#ddd}
   .quiz{padding:0;align-items:flex-end}
   .qbox{border-radius:22px 22px 0 0;max-height:94dvh}
 }
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.gallery figure{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/5;background:var(--ink2)}
+.gallery img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.gallery figure:hover img{transform:scale(1.04)}
+.gallery figcaption{position:absolute;left:10px;bottom:10px;right:10px;font-size:13px;font-weight:700;color:#fff;background:#141414c7;backdrop-filter:blur(6px);border-radius:10px;padding:7px 10px;width:fit-content;max-width:calc(100% - 20px)}
+@media(max-width:640px){.gallery{grid-template-columns:1fr 1fr;gap:10px}.gallery figcaption{font-size:11.5px;padding:5px 8px;left:8px;bottom:8px}}
 /* ===== STOP-SCROLL HERO ===== */
 #tkProgress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--y);z-index:60}
 #track{position:relative;height:720vh;background:var(--ink)}
@@ -374,9 +380,14 @@ footer a{color:#ddd}
       <div class="term"><div class="big">від $2000 / міс</div><p>Чесна оплата без затримок. Ставки і схему оплати розкажемо на дзвінку.</p></div>
       <div class="term"><div class="big">Складні системи</div><p>Трекові та магнітні системи, тіньовий профіль, світлові лінії — ростеш у кваліфікації і в чеку.</p></div>
     </div>
-    <div class="photo-row">
-      <img src="img/t4.jpg" alt="Команда монтажників" loading="lazy" width="1024" height="1024">
-      <img src="img/h12.jpg" alt="Готова натяжна стеля зі світловою лінією" loading="lazy" width="1078" height="659">
+    <p class="kicker" style="margin-top:44px">Наші об'єкти — справжні фото</p>
+    <div class="gallery">
+      <figure><img src="img/work-52.jpg" alt="Світлові лінії, що переходять зі стелі на стіни" loading="lazy" width="825" height="1100"><figcaption>Світлові лінії зі стелі на стіни</figcaption></figure>
+      <figure><img src="img/work-45.jpg" alt="Багаторівнева стеля з підсвіткою і світловим вікном" loading="lazy" width="825" height="1100"><figcaption>Багаторівнева з підсвіткою</figcaption></figure>
+      <figure><img src="img/work-57.jpg" alt="Магнітна трекова система в тіньовому профілі" loading="lazy" width="1100" height="825"><figcaption>Магнітний трек</figcaption></figure>
+      <figure><img src="img/work-50.jpg" alt="Світлові лінії у великій залі" loading="lazy" width="825" height="1100"><figcaption>Лінії у залі</figcaption></figure>
+      <figure><img src="img/work-32.jpg" alt="Геометрія зі світлових ліній і контурна підсвітка" loading="lazy" width="825" height="1100"><figcaption>Геометрія + контурна підсвітка</figcaption></figure>
+      <figure><img src="img/work-36.jpg" alt="Трекові світильники на натяжній стелі" loading="lazy" width="1100" height="825"><figcaption>Трекова система</figcaption></figure>
     </div>
   </div>
 </section>
