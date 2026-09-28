@@ -29,11 +29,17 @@ export async function POST(req) {
     utm && `\n📊 ${utm}`,
   ].filter(x => typeof x === "string");
 
-  const r = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+  const send = (chat_id, text) => fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ chat_id: chat, text: lines.join('\n'), parse_mode: 'HTML', disable_web_page_preview: true }),
+    body: JSON.stringify({ chat_id, text, parse_mode: 'HTML', disable_web_page_preview: true }),
   });
+  let r = await send(chat, lines.join('\n'));
+  // Група кандидатів недоступна (бота прибрали / змінився ID) — шлемо в основний чат, щоб анкета не загубилась.
+  if (!r.ok && env.CHAT_ID && chat !== env.CHAT_ID) {
+    console.error('telegram vacancy chat', r.status, await r.text());
+    r = await send(env.CHAT_ID, '⚠️ <i>Група кандидатів недоступна для бота — анкета прийшла сюди.</i>\n\n' + lines.join('\n'));
+  }
   if (!r.ok) console.error('telegram', r.status, await r.text());
   return Response.json({ ok: r.ok }, { status: r.ok ? 200 : 502 });
 }
