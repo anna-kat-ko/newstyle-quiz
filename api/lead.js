@@ -11,6 +11,29 @@ export async function POST(req) {
   try { d = await req.json(); } catch { return Response.json({ ok: false, error: 'bad json' }, { status: 400 }); }
   if (!d.name || !(d.phone || d.telegram)) return Response.json({ ok: false, error: 'name + phone required' }, { status: 400 });
 
+  // Бот-телефоніст (BOT_URL + FORM_SECRET): сам напише в Telegram, запише в таблицю й подзвонить клієнту
+  // (заявки лише з Telegram-ніком теж ідуть у таблицю, просто без дзвінка).
+  // Якщо бот не задано або недоступний — шлемо в Telegram як раніше, щоб заявка не загубилась.
+  if (env.BOT_URL && env.FORM_SECRET) {
+    try {
+      const r = await fetch(`${env.BOT_URL.replace(/\/$/, '')}/api/lead`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-form-secret': env.FORM_SECRET },
+        body: JSON.stringify({
+          name: d.name, phone: d.phone, source: 'quiz',
+          details: {
+            'Площа': d.area, 'Полотно': d.canvas, 'Освітлення': d.light,
+            'Надіслати в': d.messenger, 'Telegram': d.telegram && `@${d.telegram}`,
+            'UTM': Object.entries(d.utm || {}).filter(([k]) => k.startsWith('utm_')).map(([k, v]) => `${k.slice(4)}: ${v}`).join(', '),
+          },
+        }),
+        signal: AbortSignal.timeout(8000),
+      });
+      if (r.ok) return Response.json({ ok: true });
+      console.error('bot-telefonist', r.status, await r.text());
+    } catch (e) { console.error('bot-telefonist', e); }
+  }
+
   const utm = Object.entries(d.utm || {}).filter(([k]) => k.startsWith('utm_')).map(([k, v]) => `${k.slice(4)}: ${esc(v)}`).join(', ');
   const lines = [
     '🆕 <b>Заявка з квізу — натяжні стелі</b>',
