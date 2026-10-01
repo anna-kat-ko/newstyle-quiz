@@ -1,4 +1,4 @@
-// Vercel Function: приймає анкету кандидата з лендінгу вакансії і пересилає в Telegram (@NewStyleKyiv_bot).
+// Vercel Function: приймає анкету кандидата з лендінгів вакансій (/vakansiya — монтажник, /pidsobnyk — role: 'helper') і пересилає в Telegram (@NewStyleKyiv_bot).
 // Змінні оточення у Vercel: BOT_TOKEN, CHAT_ID; VACANCY_CHAT_ID — необов'язково, окремий чат для кандидатів.
 
 const esc = s => String(s ?? '').replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])).slice(0, 300);
@@ -17,8 +17,8 @@ export async function POST(req) {
   const answers = (Array.isArray(d.answers) ? d.answers : []).slice(0, 12)
     .map(a => `▫️ ${esc(a.q)}\n     <b>${esc(a.a)}</b>`).join('\n');
   const lines = [
-    '👷 <b>Кандидат — монтажник натяжних стель (з досвідом)</b>',
-    `${TIER[d.tier] || esc(d.tier)} · бали ${esc(d.score)}`,
+    d.role === 'helper' ? '🧰 <b>Кандидат — підсобник у бригаду</b>' : '👷 <b>Кандидат — монтажник натяжних стель (з досвідом)</b>',
+    (TIER[d.tier] || esc(d.tier)) + (d.score ? ` · бали ${esc(d.score)}` : ''),
     '',
     `👤 ${esc(d.name)}`,
     `📞 ${esc(d.phone)}`,
