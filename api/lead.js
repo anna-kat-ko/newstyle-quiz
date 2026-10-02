@@ -10,6 +10,7 @@ export async function POST(req) {
   let d;
   try { d = await req.json(); } catch { return Response.json({ ok: false, error: 'bad json' }, { status: 400 }); }
   if (!d.name || !(d.phone || d.telegram)) return Response.json({ ok: false, error: 'name + phone required' }, { status: 400 });
+  if (d.location === 'Інша область') return Response.json({ ok: false, error: 'out of region' }, { status: 422 });
 
   // Бот-телефоніст (BOT_URL + FORM_SECRET): сам напише в Telegram, запише в таблицю й подзвонить клієнту
   // (заявки лише з Telegram-ніком теж ідуть у таблицю, просто без дзвінка).
@@ -22,7 +23,7 @@ export async function POST(req) {
         body: JSON.stringify({
           name: d.name, phone: d.phone, source: 'quiz',
           details: {
-            'Площа': d.area, 'Полотно': d.canvas, 'Освітлення': d.light,
+            'Локація': d.location, 'Площа': d.area, 'Полотно': d.canvas, 'Освітлення': d.light,
             'Надіслати в': d.messenger, 'Telegram': d.telegram && `@${d.telegram}`,
             'UTM': Object.entries(d.utm || {}).filter(([k]) => k.startsWith('utm_')).map(([k, v]) => `${k.slice(4)}: ${v}`).join(', '),
           },
@@ -43,6 +44,7 @@ export async function POST(req) {
     d.telegram && `✈️ @${esc(d.telegram)} — https://t.me/${encodeURIComponent(d.telegram)}`,
     `💬 Надіслати в: <b>${esc(d.messenger)}</b>`,
     '',
+    d.location && `📍 Локація: ${esc(d.location)}`,
     `📐 Площа: ${esc(d.area)}`,
     `🎨 Полотно: ${esc(d.canvas)}`,
     `💡 Освітлення: ${esc(d.light)}`,
